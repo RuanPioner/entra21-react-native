@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script src="./jwtdecode.js"></script>
+    <style>
+        body{
+            background-color: rgba(70, 70, 70, 0.973);
+        }
+        button{
+            margin-top: 5px;
+            width: 50px;
+            margin-left: 70px;
+            background-color: grey;
+            border-radius: 5px;
+            color: white;
+        }
+        .container{
+            width: 200px;
+            height: 155px;
+            border-radius: 5px;
+            border: 2px solid;
+            border-color: rgb(155, 153, 153);
+            margin: auto;
+            background-color: #333;
+            padding: 5px;
+            color: white;
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-size: 13px;
+        }
+        input{
+            width: 195px;
+        }
+        .result{
+            margin-top: 10px;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <label>Email:</label><br>
+        <input type="text" placeholder="Informe o Email" id="email" /><br>
+        <label>Senha:</label><br>
+        <input type="password" placeholder="Informe a Senha" id="senha" /><br>
+        <button onclick="logar()">Logar</button><br>
+        <!-- <button onclick="decodetoken()">Decodificar</button><br> -->
+        <div class="result">
+        <label id="nome"></label><br>
+        <label id="emaill"></label><br>
+        <label id="perfil"></label><br>
+        </div>
+    </div>
+
+    <script>
+        function logar() {
+            var user = {
+                email: document.getElementById('email').value,
+                senha: document.getElementById('senha').value
+            }
+
+            fetch('http://localhost:8080/usuarios/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(user)
+            }).then(data => data.json())
+                .then(result => localStorage.setItem('token', result.token))
+
+            var tokendecodificado = jwt_decode(localStorage.getItem('token'))
+            console.log(tokendecodificado)
+
+            alert(`Bem Vindo(a) ${tokendecodificado.nome} !`)
+            document.getElementById('nome').innerHTML = `Nome: ${tokendecodificado.nome}`
+            document.getElementById('emaill').innerHTML = `Email: ${tokendecodificado.email}`
+            document.getElementById('perfil').innerHTML = `Perfil: ${tokendecodificado.perfil}`
+        }
+
+        // function decodetoken() {
+        //     var tokendecodificado = jwt_decode(localStorage.getItem('token'))
+        //     console.log(tokendecodificado)
+
+        //     alert(`Bem Vindo(a) ${tokendecodificado.nome}`)
+        //         document.getElementById('nome').innerHTML = `Nome: ${tokendecodificado.nome}`
+        //         document.getElementById('emaill').innerHTML = `Email: ${tokendecodificado.email}`
+        //         document.getElementById('perfil').innerHTML = `Perfil: ${tokendecodificado.perfil}`
+
+        // }
+    </script>
+</body>
+
+</html>
